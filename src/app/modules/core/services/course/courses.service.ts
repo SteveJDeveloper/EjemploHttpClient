@@ -43,6 +43,13 @@ export class CoursesService {
     return this.http.get<Course[]>(api, { params });
   }
 
+  // PETICION CON HEADERS PERSONALIZADOS
+  getCoursesWithHeaders(): Observable<Course[]> {
+    const customHeaders: HttpHeaders = new HttpHeaders();
+    customHeaders.set("Authorization","Bearer: eyJhbG.eyJzd.SflKxwRJSMeKKF2QT4");
+    return this.http.get<Course[]>(this.apiUrl, {headers: customHeaders});
+  }
+
   // HANDLER DE ERRORES
   private handleError(error: HttpErrorResponse) {
     if (error.status === 0) {
@@ -64,6 +71,21 @@ export class CoursesService {
         retry(3), // reintentar una solicitud fallida hasta 3 veces
         catchError(this.handleError)
       );
+  }
+
+  //PETICION CON PROMESAS
+  getCoursesWithPromises() {
+    const promise = new Promise<Course[]>((resolve, reject) => {
+      return this.http.get<Course[]>(this.apiUrl).subscribe({
+        next: response => {
+          resolve(response)
+        },
+        error: error => {
+          reject(error)
+        }
+      });
+    })
+    return promise;
   }
 
 }
